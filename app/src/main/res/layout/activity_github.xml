@@ -37,7 +37,7 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="#3C6A6A6A"
+        android:background="#3C272626"
         >
         <ProgressBar
             android:layout_width="wrap_content"

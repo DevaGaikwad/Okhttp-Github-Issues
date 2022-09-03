@@ -1,6 +1,7 @@
 package com.deva.github_issues
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
@@ -15,6 +16,8 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.activity_github.*
+import kotlinx.android.synthetic.main.activity_github.progress_bar
+import kotlinx.android.synthetic.main.activity_issue_details.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -47,6 +50,7 @@ class GithubActivity : AppCompatActivity() {
                 val jsonArray = JSONArray(data_string)
                 for (i in 0 until jsonArray.length()) {
                     val issue = jsonArray.getJSONObject(i)
+                    val cmntUrl=issue.getString("comments_url")
                     val title = issue.getString("title")
                     val description = issue.getString("body")
                     val updated_time = issue.getString("updated_at")
@@ -55,12 +59,18 @@ class GithubActivity : AppCompatActivity() {
                     val uname = user.getString("login")
                     val uImage = user.getString("avatar_url")
 
-                    val item = GithubViewModel(uImage, uname, title, description, updated_time)
+                    val item = GithubViewModel(uImage, uname, title, description, updated_time,cmntUrl)
                     data.add(item)
                 }
 
                 val adapter = CustomAdapter(data)
                 issues_recycler.adapter = adapter
+                adapter.onItemClick={ issue->
+                    val intent = Intent(this, IssueDetailsActivity::class.java)
+                    intent.putExtra("issue_item",issue)
+                    startActivity(intent)
+                }
+
 
             } catch (e: JSONException) {
                 Log.e("localGithubIssues", "" + e.message)
@@ -109,6 +119,8 @@ class GithubActivity : AppCompatActivity() {
 
                      for (i in 0 until jsonArray.length()) {
                      val issue = jsonArray.getJSONObject(i)
+                         val cmntUrl=issue.getString("comments_url")
+
                      val title = issue.getString("title")
                     val description=issue.getString("body")
                     val updated_time=issue.getString("updated_at")
@@ -117,12 +129,17 @@ class GithubActivity : AppCompatActivity() {
                     val uname=user.getString("login")
                     val uImage=user.getString("avatar_url")
 
-                    val item=GithubViewModel(uImage,uname,title,description,updated_time)
+                    val item=GithubViewModel(uImage,uname,title,description,updated_time,cmntUrl)
                     data.add(item)
                      }
 
-                    val adapter=CustomAdapter(data)
-                    issues_recycler.adapter=adapter
+                    val adapter = CustomAdapter(data)
+                    issues_recycler.adapter = adapter
+                    adapter.onItemClick={ issue->
+                        val intent = Intent(this, IssueDetailsActivity::class.java)
+                        intent.putExtra("issue_item",issue)
+                        startActivity(intent)
+                    }
 
                     val sharedPreference =  getSharedPreferences("github_issues", Context.MODE_PRIVATE)
                     var editor = sharedPreference.edit()
@@ -137,6 +154,7 @@ class GithubActivity : AppCompatActivity() {
             },
             Response.ErrorListener { error ->
                 //your error
+                progress_bar.visibility= View.GONE
                 error.message?.let { Log.e("GithubAct", it) }
             }){}
 

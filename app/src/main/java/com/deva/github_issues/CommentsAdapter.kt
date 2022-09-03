@@ -5,17 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
-import java.util.*
 
-class CustomAdapter(private val mList: List<GithubViewModel>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class CommentsAdapter(private val mList: List<CommentModel>) : RecyclerView.Adapter<CommentsAdapter.ViewHolder>() {
 
     var context: Context? =null
-    var onItemClick: ((GithubViewModel) -> Unit)? = null
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +20,7 @@ class CustomAdapter(private val mList: List<GithubViewModel>) : RecyclerView.Ada
         // that is used to hold list item
         context=parent.context
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.issue_item_row, parent, false)
+            .inflate(R.layout.comment_item_row, parent, false)
 
         return ViewHolder(view)
     }
@@ -46,8 +43,7 @@ class CustomAdapter(private val mList: List<GithubViewModel>) : RecyclerView.Ada
         }
 
         holder.uname.text = ItemsViewModel.uname
-        holder.title.text=ItemsViewModel.title
-        holder.description.text=ItemsViewModel.desc
+        holder.cmnt.text=ItemsViewModel.cmnt
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val outputFormat = SimpleDateFormat("mm-dd-yyyy hh:mm a")
@@ -55,9 +51,6 @@ class CustomAdapter(private val mList: List<GithubViewModel>) : RecyclerView.Ada
         val det = outputFormat.format(parsedDate)
         holder.time.text= det   //ItemsViewModel.time
 
-        holder.itemView.setOnClickListener{
-            onItemClick?.invoke(ItemsViewModel)
-        }
 
     }
 
@@ -68,11 +61,9 @@ class CustomAdapter(private val mList: List<GithubViewModel>) : RecyclerView.Ada
 
     // Holds the views for adding it to image and text
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val userImg: CircleImageView = itemView.findViewById(R.id.user_image_civ)
-        val uname: TextView = itemView.findViewById(R.id.user_name_tv)
-        val title: TextView = itemView.findViewById(R.id.title_issue_tv)
-        val description: TextView = itemView.findViewById(R.id.desc_issue_tv)
-        val time: TextView = itemView.findViewById(R.id.updated_time)
-
+        val userImg: CircleImageView = itemView.findViewById(R.id.commenter_image_civ)
+        val uname: TextView = itemView.findViewById(R.id.commenter_name_tv)
+        val cmnt: TextView = itemView.findViewById(R.id.commment_tv)
+        val time: TextView = itemView.findViewById(R.id.comment_time)
     }
 }
